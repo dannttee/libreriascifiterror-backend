@@ -1,0 +1,23 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Maven
+target/
+.classpath
+.project
+.settings/
+*.class
+*.jar
+*.log
+
+# Environment
+.env
+.env.local
+
+# System
+.DS_Store
+Thumbs.db
