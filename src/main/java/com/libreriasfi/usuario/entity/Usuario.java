@@ -1,4 +1,4 @@
-package com.libreriasfi.auth.entity;
+package com.libreriasfi.usuario.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,9 +1,10 @@
-package com.libreriasfi.auth.service;
+package com.libreriasfi.usuario.service;
 
-import com.libreriasfi.auth.entity.Usuario;
-import com.libreriasfi.auth.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.libreriasfi.usuario.entity.Usuario;
+import com.libreriasfi.usuario.repository.UsuarioRepository;
 
 import java.util.Optional;
 

@@ -1,18 +1,25 @@
-package com.libreriasfi.auth.controller;
+package com.libreriasfi.usuario.controller;
 
-import com.libreriasfi.auth.entity.Usuario;
-import com.libreriasfi.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import com.libreriasfi.usuario.entity.Usuario;
+import com.libreriasfi.usuario.service.AuthService;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1/usuario")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173"
+})
+@Tag(name = "usuario-controller", description = "Operaciones de usuarios")
 public class AuthController {
     
     @Autowired

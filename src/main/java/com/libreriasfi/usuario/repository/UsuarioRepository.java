@@ -1,8 +1,9 @@
-package com.libreriasfi.auth.repository;
+package com.libreriasfi.usuario.repository;
 
-import com.libreriasfi.auth.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.libreriasfi.usuario.entity.Usuario;
 
 import java.util.Optional;
 
