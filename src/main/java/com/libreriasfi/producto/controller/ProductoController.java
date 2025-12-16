@@ -13,11 +13,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/productos")
-@CrossOrigin(origins = {
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:5173"
-})
+@CrossOrigin(origins = "*") 
+
 @Tag(name = "producto-controller", description = "Operaciones de productos")
 public class ProductoController {
 
