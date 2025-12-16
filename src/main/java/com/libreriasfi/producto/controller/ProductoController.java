@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/productos")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "https://libreria-scifi-react-ewnt.vercel.app")
 
 @Tag(name = "producto-controller", description = "Operaciones de productos")
 public class ProductoController {

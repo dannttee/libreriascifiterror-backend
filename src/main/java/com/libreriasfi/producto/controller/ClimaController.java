@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/clima")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "https://libreria-scifi-react-ewnt.vercel.app")
 public class ClimaController {
 
     // Aquí le decimos a Spring: "Busca la variable weather.api.key en el entorno"
