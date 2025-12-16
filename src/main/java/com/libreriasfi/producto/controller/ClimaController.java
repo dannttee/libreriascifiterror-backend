@@ -29,8 +29,9 @@ public class ClimaController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            e.printStackTrace(); // Imprime en el log de Render
             Map<String, Object> error = new HashMap<>();
-            error.put("error", "No se pudo obtener el clima: " + e.getMessage());
+            error.put("error", "Fallo interno: " + e.toString()); // Nos devuelve el error al navegador
             return ResponseEntity.status(500).body(error);
         }
     }
