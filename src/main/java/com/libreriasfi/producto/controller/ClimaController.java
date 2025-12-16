@@ -9,43 +9,59 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/api/clima")
-@CrossOrigin(origins = "https://libreria-scifi-react-ewnt.vercel.app")
+@CrossOrigin(origins = "https://libreria-scifi-react-ewnt.vercel.app", allowCredentials = "false")
 public class ClimaController {
 
     @Value("${meteored.api.key}")
     private String apiKey;
     
     private final String METEORED_BASE_URL = "https://api.meteored.com/api";
+    
+    // Caché en memoria para ubicaciones (ubicacion -> hash)
+    private final Map<String, String> locationCache = new ConcurrentHashMap<>();
 
     @GetMapping
     public ResponseEntity<?> obtenerClima(@RequestParam String direccion) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             
-            // PASO 1: Buscar ubicación por nombre de texto
-            String searchUrl = METEORED_BASE_URL + "/location/v1/search/txt/" + direccion 
-                             + "?api_key=" + apiKey;
-            Map<String, Object> locationResponse = restTemplate.getForObject(searchUrl, Map.class);
+            // Normalizar dirección para búsqueda en caché
+            String direccionNormalizada = direccion.toLowerCase().trim();
+            String locationHash = null;
             
-            // Verificar si hay resultados
-            if (locationResponse == null || !locationResponse.containsKey("locations")) {
-                return ResponseEntity.status(404).body(Map.of("error", "Ubicación no encontrada"));
-            }
-            
-            List<Map<String, Object>> locations = (List<Map<String, Object>>) locationResponse.get("locations");
-            if (locations == null || locations.isEmpty()) {
-                return ResponseEntity.status(404).body(Map.of("error", "No hay resultados para esta ubicación"));
-            }
-            
-            // Obtener la primera ubicación
-            Map<String, Object> primeraUbicacion = locations.get(0);
-            String locationHash = (String) primeraUbicacion.get("hash");
-            
-            if (locationHash == null) {
-                return ResponseEntity.status(400).body(Map.of("error", "No se pudo obtener el hash de la ubicación"));
+            // PASO 1: Buscar en caché primero
+            if (locationCache.containsKey(direccionNormalizada)) {
+                locationHash = locationCache.get(direccionNormalizada);
+            } else {
+                // Si no está en caché, buscar en la API
+                String searchUrl = METEORED_BASE_URL + "/location/v1/search/txt/" + direccion 
+                                 + "?api_key=" + apiKey;
+                Map<String, Object> locationResponse = restTemplate.getForObject(searchUrl, Map.class);
+                
+                // Verificar si hay resultados
+                if (locationResponse == null || !locationResponse.containsKey("locations")) {
+                    return ResponseEntity.status(404).body(Map.of("error", "Ubicación no encontrada"));
+                }
+                
+                List<Map<String, Object>> locations = (List<Map<String, Object>>) locationResponse.get("locations");
+                if (locations == null || locations.isEmpty()) {
+                    return ResponseEntity.status(404).body(Map.of("error", "No hay resultados para esta ubicación"));
+                }
+                
+                // Obtener la primera ubicación
+                Map<String, Object> primeraUbicacion = locations.get(0);
+                locationHash = (String) primeraUbicacion.get("hash");
+                
+                if (locationHash == null) {
+                    return ResponseEntity.status(400).body(Map.of("error", "No se pudo obtener el hash de la ubicación"));
+                }
+                
+                // Guardar en caché
+                locationCache.put(direccionNormalizada, locationHash);
             }
             
             // PASO 2: Obtener el pronóstico por hora usando el hash
@@ -55,9 +71,7 @@ public class ClimaController {
             
             // PASO 3: Procesar respuesta para extraer datos útiles
             Map<String, Object> resultado = new LinkedHashMap<>();
-            resultado.put("ubicacion", primeraUbicacion.get("name"));
-            resultado.put("pais", primeraUbicacion.get("country"));
-            resultado.put("provincia", primeraUbicacion.get("province"));
+            resultado.put("ubicacion", direccion);
             
             // Si hay datos de pronóstico
             if (forecastResponse != null && forecastResponse.containsKey("data")) {
