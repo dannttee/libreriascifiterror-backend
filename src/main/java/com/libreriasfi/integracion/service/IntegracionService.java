@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Service
 public class IntegracionService {
 
-    @Value("${meteored.api.key}") // Cumple el requisito de ocultar la key
+    @Value("${meteored.api.key}") // Ocultar la key
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
